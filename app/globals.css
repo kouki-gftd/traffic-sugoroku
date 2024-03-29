@@ -22,3 +22,22 @@ body {
 .login-container form {
   width: 70%;
 }
+
+.create-new-room-container {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.58);
+}
+
+.game-mode h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.game-mode >div {
+  margin-bottom: 20px;
+}
