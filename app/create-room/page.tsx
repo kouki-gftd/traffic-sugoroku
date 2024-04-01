@@ -15,7 +15,7 @@ const Page = () => {
             <h1>Basic</h1>
             <p>Who arrives the fastest?</p>
           </div>
-          <div>
+          {/* <div>
             <h1>Aging Society</h1>
             <p>Elderly people can only use trains</p>
           </div>
@@ -26,7 +26,7 @@ const Page = () => {
           <div>
             <h1>Viewing Cherry Blossoms</h1>
             <p>Two of you must quickly reserve a nice spot</p>
-          </div>
+          </div> */}
         </div>
         <button className="my-5 px-20 py-3 bg-buttonColor font-bold rounded-lg text-white">Next</button>
       </div>
