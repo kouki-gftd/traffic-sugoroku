@@ -14,3 +14,15 @@ model Player {
   id   Int @id @default(autoincrement())
   name String
 }
+
+model Rooms {
+  roomId          Int @id @default(autoincrement())
+  gameMode        String
+  city            String
+  publicTransport String
+}
+
+model cities {
+  cityId Int @id
+  name String
+}
