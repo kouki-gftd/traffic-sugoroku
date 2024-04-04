@@ -10,9 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Player {
-  id   Int @id @default(autoincrement())
-  name String
+model Players {
+  id         Int @id @default(autoincrement())
+  playerName String
+  createdAt  DateTime @default(now())
 }
 
 model Rooms {
@@ -20,9 +21,22 @@ model Rooms {
   gameMode        String
   city            String
   publicTransport String
+  createdAt       DateTime @default(now())
 }
 
-model cities {
-  cityId Int @id
-  name String
+model Cities {
+  cityId   Int @id
+  cityName String
+  line     String
+}
+
+model Lines {
+  lineId      Int @id
+  stationName String
+  cityName    String
+}
+
+model GameModes {
+  id       Int @id
+  gameMode String
 }
