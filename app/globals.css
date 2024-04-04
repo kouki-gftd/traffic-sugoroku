@@ -6,38 +6,3 @@ body {
   color: rgb(var(--foreground-rgb));
   background: #D9D9D9;
 }
-
-.login-container {
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 30%;
-  height: 300px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.58);
-}
-
-.login-container form {
-  width: 70%;
-}
-
-.create-new-room-container {
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 50%;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.58);
-}
-
-.game-mode h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.game-mode >div {
-  margin-bottom: 20px;
-}

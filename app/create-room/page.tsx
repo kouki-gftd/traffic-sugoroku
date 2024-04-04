@@ -1,21 +1,45 @@
+'use client';
+
+import { addGameMode } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
 const Page = () => {
+
+  const router = useRouter();
+  const [gameMode, setGameMode] = useState<string>("basic"); // デフォルトのゲームモードを設定
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      await addGameMode(gameMode);
+      router.push('/room-config');
+    } catch (error) {
+      console.error('Failed to add game mode:', error);
+    }
+  };
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h1 className="mt-8 ml-10 text-4xl text-white font-bold">SUGOROKU</h1>
         <h1 className="mt-8 mr-10 text-4xl text-white font-bold">View Result</h1>
       </div>
-      <div className="create-new-room-container">
+      <div className="create-new-room-container w-1/2 mx-auto flex flex-col items-center rounded-xl bg-white bg-opacity-60">
         <div className="my-10 text-5xl font-bold">
           Create New Room
         </div>
         <p className="mt-5 mb-5 text-2xl font-bold">Choose Game Mode</p>
-        <div className="game-mode">
-          <div>
-            <h1>Basic</h1>
-            <p>Who arrives the fastest?</p>
-          </div>
-          {/* <div>
+        <form onSubmit={handleSubmit}>
+          <div className="">
+            <div className="flex">
+              <input type="radio" value="basic" defaultChecked={gameMode === "basic"} />
+              <div className="mx-5">
+                <h1 className="text-lg font-bold">Basic</h1>
+                <p>Who arrives the fastest?</p>
+              </div>
+            </div>
+            {/* <div>
             <h1>Aging Society</h1>
             <p>Elderly people can only use trains</p>
           </div>
@@ -27,8 +51,11 @@ const Page = () => {
             <h1>Viewing Cherry Blossoms</h1>
             <p>Two of you must quickly reserve a nice spot</p>
           </div> */}
-        </div>
-        <button className="my-5 px-20 py-3 bg-buttonColor font-bold rounded-lg text-white">Next</button>
+          </div>
+          <button type="submit" className="mx-5 my-5 px-20 py-3 bg-buttonColor font-bold rounded-lg text-white">
+            Next
+          </button>
+        </form>
       </div>
     </div>
   )
