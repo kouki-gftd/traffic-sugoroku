@@ -1,6 +1,5 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import Head from "next/head";
 
 const Page = async () => {
   const Players = await prisma.players.findMany();
