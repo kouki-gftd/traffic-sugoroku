@@ -12,7 +12,7 @@ datasource db {
 
 model Players {
   id         Int @id @default(autoincrement())
-  playerName String
+  playerName String @unique
   createdAt  DateTime @default(now())
 }
 

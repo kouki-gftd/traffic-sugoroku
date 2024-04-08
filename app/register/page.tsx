@@ -19,9 +19,23 @@ const Page = () => {
       return;
     }
 
-    // 登録処理
-    await addPlayer(name);
-    router.push('/create-room');
+    // 名前が10文字以下であることをチェック
+    if (name.length > 10) {
+      setError('※名前は10文字以下で入力して下さい');
+      return;
+    }
+
+    try {
+      // 登録処理
+      await addPlayer(name);
+      router.push('/create-room');
+    } catch (error) {
+      if ((error as Error).message === 'NAME_ALREADY_EXISTS') {
+        setError('※その名前はすでに使用されています');
+      } else {
+        setError('※エラーが発生しました');
+      }
+    }
   };
 
   return (
@@ -33,7 +47,7 @@ const Page = () => {
         <h1 className="mb-8 text-2xl md:mb-8 md:text-4xl font-bold">
           Register!
         </h1>
-        <form  onSubmit={handleSubmit} className="w-2/3 flex flex-col">
+        <form onSubmit={handleSubmit} className="w-2/3 flex flex-col">
           <p className="font-bold text-sm">
             Player Name
           </p>
