@@ -29,7 +29,7 @@ const Page = () => {
       <h1 className="m-10 text-center text-5xl md:m-10 md:text-left md:text-4xl text-white font-bold">
         SUGOROKU
       </h1>
-      <div className="w-1/3 mx-auto flex flex-col items-center justify-center rounded-xl bg-white bg-opacity-60 h-72">
+      <div className="w-4/5 md:w-1/3 mx-auto flex flex-col items-center justify-center rounded-xl bg-white bg-opacity-60 h-72">
         <h1 className="mb-8 text-2xl md:mb-8 md:text-4xl font-bold">
           Register!
         </h1>
