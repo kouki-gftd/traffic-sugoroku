@@ -17,10 +17,13 @@ export const addPlayer = async (playerName: string) => {
   await prisma.players.create({ data: { playerName } });
 }
 
-export const addGameMode = async (gameMode: string) => {
-  await prisma.rooms.create({ data: {
-    gameMode:         gameMode,
-    city:            'defaultCity',
-    publicTransport: 'defaultTransport'
+export const addGameMode = async ( gameMode: string ) => {
+  await prisma.gameModes.create({ data: {
+    gameMode: gameMode,
   }});
+}
+
+export const getPlayers = async () => {
+  const players = await prisma.players.findMany();
+  return players;
 }
