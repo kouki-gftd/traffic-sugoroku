@@ -12,8 +12,8 @@ const Page = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await addGameMode(gameMode);
-      router.push('/room-config');
+      const gameModeId = await addGameMode(gameMode);
+      router.push(`/room-config?gameModeId=${gameModeId}`);
     } catch (error) {
       console.error('Failed to add game mode:', error);
     }
