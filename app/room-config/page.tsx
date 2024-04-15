@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { getCityId, getGameMode, getPlayers } from "@/lib/actions";
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { handleNextClick } from '@/lib/actions';
 
 type Player = {
@@ -11,6 +11,7 @@ type Player = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   // const [players, setPlayers] = useState<{id: number, playerName: string, createdAt: Date}[]>([]);
@@ -53,11 +54,12 @@ const Page = () => {
     setTrafficIndex((prevIndex) => (prevIndex < traffic.length - 1 ? prevIndex + 1 : 0));
   }
 
-  const nextButton = () => {
+  const nextButton = async () => {
     const cityName = cities[cityIndex];
     const gameModeId = Number(searchParams.get("gameModeId"));
     const publicTransport = traffic[trafficIndex];
-    handleNextClick(cityName, gameModeId, publicTransport);
+    await handleNextClick(cityName, gameModeId, publicTransport);
+    router.push("/play-sugoroku");
   };
 
   return (
