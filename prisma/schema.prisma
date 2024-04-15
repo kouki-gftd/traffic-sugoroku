@@ -19,8 +19,7 @@ model Players {
 model Rooms {
   roomId          Int @id @default(autoincrement())
   gameMode        String
-  cityId          Int
-  city            Cities @relation(fields: [cityId], references: [cityId])
+  cityName        String
   publicTransport String
   createdAt       DateTime @default(now())
 }
@@ -28,13 +27,6 @@ model Rooms {
 model GameModes {
   id       Int @id @default(autoincrement())
   gameMode String
-}
-
-model Cities {
-  cityId   Int @id
-  cityName String
-  line     String
-  Rooms    Rooms[]
 }
 
 model PublicTransport {

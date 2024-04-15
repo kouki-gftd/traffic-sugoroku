@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getPlayers } from "@/lib/actions";
+import { getCityId, getGameMode, getPlayers } from "@/lib/actions";
+import { useSearchParams } from 'next/navigation';
+import { handleNextClick } from '@/lib/actions';
 
 type Player = {
   id: number;
@@ -9,6 +11,8 @@ type Player = {
 };
 
 const Page = () => {
+  const searchParams = useSearchParams();
+
   // const [players, setPlayers] = useState<{id: number, playerName: string, createdAt: Date}[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
 
@@ -48,6 +52,13 @@ const Page = () => {
   const handleTrafficNextClick = () => {
     setTrafficIndex((prevIndex) => (prevIndex < traffic.length - 1 ? prevIndex + 1 : 0));
   }
+
+  const nextButton = () => {
+    const cityName = cities[cityIndex];
+    const gameModeId = Number(searchParams.get("gameModeId"));
+    const publicTransport = traffic[trafficIndex];
+    handleNextClick(cityName, gameModeId, publicTransport);
+  };
 
   return (
     <div>
@@ -97,7 +108,7 @@ const Page = () => {
             </ul>
           </div>
         </div>
-        <button className="m-3 text-2xl bg-buttonColor p-3 font-bold rounded-lg text-white">
+        <button onClick={nextButton} className="m-3 text-2xl bg-buttonColor p-3 font-bold rounded-lg text-white">
           START GAME!
         </button>
       </div>
