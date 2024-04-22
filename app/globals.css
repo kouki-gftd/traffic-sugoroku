@@ -12,3 +12,13 @@ body {
     display: none;
   }
 }
+
+.station img {
+  height: 3rem;
+  width: 3rem;
+}
+
+.card {
+  height: 8rem;
+  width: 7rem;
+}
