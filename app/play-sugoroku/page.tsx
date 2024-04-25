@@ -1,9 +1,37 @@
+'use client';
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import prisma from "@/lib/prisma";
 import CardSelect from "@/components/CardSelect";
 
-const Page = async () => {
-  const player = await prisma.players.findMany();
+const Page = () => {
+  const [showCardSelect, setShowCardSelect] = useState<boolean>(false);
+  const [players, setPlayers] = useState<{id: number, playerName: string, createdAt: Date}[]>([]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCardSelect(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      const res = await fetch('/api/players');
+      const data = await res.json();
+      setPlayers(data);
+    };
+    fetchPlayers();
+  },[]);
+
+  const renderPlayerCards = (players: {id: number, playerName: string, createdAt: Date}[]) => {
+    return players.map((player) => (
+      <div key={player.id}>
+        {player.playerName}
+        <img className="card" src="/question-card.png" alt="カード" />
+      </div>
+    ));
+  }
 
   return (
     <>
@@ -17,7 +45,7 @@ const Page = async () => {
       </div>
 
       <div>
-        <CardSelect/>
+        {showCardSelect ? <CardSelect/> : null}
       </div>
 
       <div className="flex items-start h-screen md:h-72">
@@ -64,12 +92,7 @@ const Page = async () => {
           <div className="mx-10 my-3">STATS</div>
           <div className="w-full mx-3 my-3">
             <div className="w-full flex justify-around">
-              {player.map((player) => (
-                <div>
-                  {player.playerName}
-                  <img className="card" src="/question-card.png" alt="カード" />
-                </div>
-              ))}
+              {renderPlayerCards(players)}
             </div>
           </div>
         </div>
