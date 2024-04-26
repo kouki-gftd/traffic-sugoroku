@@ -7,6 +7,13 @@ const Page = () => {
   const [showCardSelect, setShowCardSelect] = useState<boolean>(false);
   const [players, setPlayers] = useState<{id: number, playerName: string, createdAt: Date}[]>([]);
 
+  // 各プレイヤーの選択したカードを追跡するための状態変数を作成
+  const [selectedCards, setSelectedCards] = useState<{[id: number]: string}>({});
+
+  const selectedCard = (playerId: number, card: string) => {
+    setSelectedCards(prev => ({...prev, [playerId]: card}));
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCardSelect(true);
@@ -28,7 +35,8 @@ const Page = () => {
     return players.map((player) => (
       <div key={player.id}>
         {player.playerName}
-        <img className="card" src="/question-card.png" alt="カード" />
+        <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
+        {showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard}/> : null}
       </div>
     ));
   }
@@ -42,10 +50,6 @@ const Page = () => {
         <div className="md:text-5xl text-end md:text-center font-bold">
           Tsukuba Express
         </div>
-      </div>
-
-      <div>
-        {showCardSelect ? <CardSelect/> : null}
       </div>
 
       <div className="flex items-start h-screen md:h-72">
