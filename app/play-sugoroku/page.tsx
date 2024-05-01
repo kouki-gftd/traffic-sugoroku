@@ -2,16 +2,28 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CardSelect from "@/components/CardSelect";
+import ChosenCard from "@/components/ChosenCard";
 
 const Page = () => {
   const [showCardSelect, setShowCardSelect] = useState<boolean>(false);
-  const [players, setPlayers] = useState<{id: number, playerName: string, createdAt: Date}[]>([]);
+  const [players, setPlayers] = useState<{ id: number, playerName: string, createdAt: Date }[]>([]);
+  const [cardChoosed, setCardChoosed] = useState<boolean>(false);
 
-  // 各プレイヤーの選択したカードを追跡するための状態変数を作成
-  const [selectedCards, setSelectedCards] = useState<{[id: number]: string}>({});
+  const randomCards = () => {
+    const cards = ['car-card.png', 'public-transport-card.png'];
+    return cards[Math.floor(Math.random() * cards.length)];
+  };
+
+  // 各プレイヤーの選択したカードを追跡するための状態変数を作成 key=数値(id) value=string
+  const [selectedCards, setSelectedCards] = useState<{ [id: number]: string }>({});
+
+  // 各プレイヤーが自分でカードを選択したかどうかを追跡するための状態変数を作成
+  const [playerSelected, setPlayerSelected] = useState<{ [id: number]: boolean }>({});
 
   const selectedCard = (playerId: number, card: string) => {
-    setSelectedCards(prev => ({...prev, [playerId]: card}));
+    setSelectedCards(prev => ({ ...prev, [playerId]: card }));
+    setPlayerSelected(prev => ({ ...prev, [playerId]: true }));
+    setCardChoosed(true);
   }
 
   useEffect(() => {
@@ -29,14 +41,26 @@ const Page = () => {
       setPlayers(data);
     };
     fetchPlayers();
-  },[]);
+  }, []);
 
-  const renderPlayerCards = (players: {id: number, playerName: string, createdAt: Date}[]) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      players.forEach(player => {
+        if (!playerSelected[player.id]) {
+          selectedCard(player.id, randomCards());
+        }
+      });
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, [players, playerSelected]);
+
+  const renderPlayerCards = (players: { id: number, playerName: string, createdAt: Date }[]) => {
     return players.map((player) => (
       <div key={player.id}>
         {player.playerName}
         <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
-        {showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard}/> : null}
+        {showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
+        {cardChoosed ? <ChosenCard card={selectedCards[player.id]} /> : null}
       </div>
     ));
   }
