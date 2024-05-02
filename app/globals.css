@@ -13,6 +13,12 @@ body {
   }
 }
 
+@media (min-width: 768px) {
+  .stationLineMap {
+    align-items: center;
+  }
+}
+
 .station img {
   height: 3rem;
   width: 3rem;
@@ -21,4 +27,10 @@ body {
 .card {
   height: 8rem;
   width: 7rem;
+}
+
+.stationLineMap {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }

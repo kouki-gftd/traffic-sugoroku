@@ -14,9 +14,9 @@ const ChosenCard: React.FC<ChosenCardProps> = ({ card }) => {
   return (
     <>
       <div className="fixed inset-0 flex justify-center items-center z-10">
-        <div className="w-2/5 flex flex-col items-center h-96 rounded-lg bg-white">
+        <div className="w-4/5 md:w-2/5 flex flex-col items-center h-96 rounded-lg bg-white">
           <div className="py-10 text-3xl font-bold text-center">
-            You chose a `{cardName}`
+            You chose a {cardName}
           </div>
           <img src={card} alt="選択したカード" width={152} height={168} />
         </div>

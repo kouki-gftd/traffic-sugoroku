@@ -77,37 +77,37 @@ const Page = () => {
       </div>
 
       <div className="flex items-start h-screen md:h-72">
-        <div className="w-full station flex flex-col-reverse md:flex-row items-center justify-around">
+        <div className="w-full station flex flex-col-reverse md:flex-row items-start md:items-center justify-around">
           <span className="text-3xl font-bold">START</span>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number1.png" alt="駅番号1" />
             <span className="font-bold text-white">Akihabara</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number2.png" alt="駅番号2" />
             <span className="font-bold text-sm text-white">shin-<br />Okachimachi</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number3.png" alt="駅番号3" />
             <span className="font-bold text-white">Asakusa</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number4.png" alt="駅番号4" />
             <span className="font-bold text-white">Minami-senjyu</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number5.png" alt="駅番号5" />
             <span className="font-bold text-white">Kita-senjyu</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number6.png" alt="駅番号6" />
             <span className="font-bold text-white">Yashio</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number7.png" alt="駅番号7" />
             <span className="font-bold text-white">Misato-chuo</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="stationLineMap">
             <img src="/station-number8.png" alt="駅番号8" />
             <span className="font-bold text-white">Tsukuba</span>
           </div>
@@ -116,10 +116,10 @@ const Page = () => {
       </div>
 
       <div className="flex flex-col justify-center items-center h-72">
-        <div className="w-full md:w-4/5 h-3/4 flex text-center text-3xl font-bold rounded-lg bg-white">
+        <div className="w-full md:w-4/5 h-3/4 flex text-center text-sm md:text-3xl font-bold rounded-lg bg-white">
           <div className="mx-10 my-3">STATS</div>
           <div className="w-full mx-3 my-3">
-            <div className="w-full flex justify-around">
+            <div className="flex justify-around">
               {renderPlayerCards(players)}
             </div>
           </div>
