@@ -9,7 +9,7 @@ const CardSelect: React.FC<CardSelectProps> = ({  playerId, selectCard }) => {
   return (
   <>  
     <div className="fixed inset-0 flex justify-center items-center z-10">
-      <div className="w-2/5 h-96 rounded-lg bg-white">
+      <div className="w-4/5 md:w-2/5 h-96 rounded-lg bg-white">
         <div className="py-10 text-3xl font-bold text-center">
           Choose your card
         </div>
