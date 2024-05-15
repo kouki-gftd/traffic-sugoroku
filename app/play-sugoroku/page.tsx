@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CardSelect from "@/components/CardSelect";
-import ChosenCard from "@/components/ChosenCard";
+import PlayersSelectedCard from "@/components/PlayersSelectedCard";
+import CalculationLogic from "@/components/CalculationLogic";
+import AllPlayersSelectedCards from "@/components/AllplayersSelectedCards";
+import CalculateCarMoveSpaces from "@/components/CalculateCarMoveSpaces";
+import CalculatePublicMoveSpaces from "@/components/CalculatePublicMoveSpaces";
 
 const Page = () => {
   const [showCardSelect, setShowCardSelect] = useState<boolean>(false);
@@ -17,8 +21,12 @@ const Page = () => {
   // 各プレイヤーの選択したカードを追跡するための状態変数を作成 key=数値(id) value=string
   const [selectedCards, setSelectedCards] = useState<{ [id: number]: string }>({});
 
-  // 各プレイヤーが自分でカードを選択したかどうかを追跡するための状態変数を作成
+  // 各プレイヤーがランダムではなく自分でカードを選択したかどうかを追跡するための状態変数を作成
   const [playerSelected, setPlayerSelected] = useState<{ [id: number]: boolean }>({});
+
+  // 全てのプレイヤーがカードを選択したかどうかを確認
+  const allPlayersSelected = Object.keys(playerSelected).length === players.length &&
+    Object.values(playerSelected).every(val => val === true);
 
   const selectedCard = (playerId: number, card: string) => {
     setSelectedCards(prev => ({ ...prev, [playerId]: card }));
@@ -29,7 +37,7 @@ const Page = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCardSelect(true);
-    }, 5000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -50,28 +58,40 @@ const Page = () => {
           selectedCard(player.id, randomCards());
         }
       });
-    }, 10000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, [players, playerSelected]);
 
+  const calculateCarCardCount = () => {
+    let count = 0;
+    for (let key in selectedCards) {
+      if (selectedCards[key] === "car-card.png") {
+        count++;
+      }
+    }
+    return count;
+  };
+
   const renderPlayerCards = (players: { id: number, playerName: string, createdAt: Date }[]) => {
     return players.map((player) => (
-      <div key={player.id}>
+      <div key={player.id} className="flex flex-col items-center">
         {player.playerName}
         <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
-        {showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
-        {cardChoosed ? <ChosenCard card={selectedCards[player.id]} /> : null}
+        {allPlayersSelected && selectedCards[player.id] ===  "car-card.png" && <CalculateCarMoveSpaces playerCount={players.length} carCardCount={calculateCarCardCount()}/> }
+        {allPlayersSelected && selectedCards[player.id] ===  "public-transport-card.png" && <CalculatePublicMoveSpaces/>}
+        {!allPlayersSelected && showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
+        {!allPlayersSelected && cardChoosed ? <PlayersSelectedCard card={selectedCards[player.id]} /> : null}
       </div>
     ));
   }
 
   return (
     <>
-      <div className="mt-5 flex flex-col">
-        <Link href={"/room-config"} className="mx-3 text-center text-2xl md:flex md:items-center md:text-3xl md:text-start font-bold text-white">
+      <div className="p-5 flex flex-col md:flex-row items-center">
+        <Link href={"/room-config"} className="mx-3 md:mr-20 md:pr-10 text-center text-2xl md:flex md:items-center md:text-3xl md:text-start font-bold text-white">
           <img src="/arrow.png" alt="矢印" className="hideOnMobile mr-3" />Back to Room
         </Link>
-        <div className="md:text-5xl text-end md:text-center font-bold">
+        <div className="md:ml-20 md:pl-20 md:text-5xl text-end md:text-center font-bold">
           Tsukuba Express
         </div>
       </div>
@@ -115,10 +135,12 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center h-72">
+      <div className="mt-10 flex flex-col justify-center items-center h-72">
         <div className="w-full md:w-4/5 h-3/4 flex text-center text-sm md:text-3xl font-bold rounded-lg bg-white">
-          <div className="mx-10 my-3">STATS</div>
-          <div className="w-full mx-3 my-3">
+          <div className="md:mx-10 mx-2 my-3">
+            STATS
+          </div>
+          <div className="w-full md:mx-3 my-3">
             <div className="flex justify-around">
               {renderPlayerCards(players)}
             </div>
