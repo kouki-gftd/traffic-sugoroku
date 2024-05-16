@@ -72,10 +72,18 @@ const Page = () => {
     return count;
   };
 
+  const getPlayerBackgroundColor = (index: number) => {
+    const colors =
+      ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-orange-500','bg-stone-500','bg-violet-500','bg-cyan-500'];
+    return colors[index % colors.length];
+  }
+
   const renderPlayerCards = (players: { id: number, playerName: string, createdAt: Date }[]) => {
-    return players.map((player) => (
-      <div key={player.id} className="flex flex-col items-center">
-        {player.playerName}
+    return players.map((player, index) => (
+      <div key={player.id} className="flex flex-col items-center text-lg">
+        <div className={`w-full mb-3 text-white rounded-lg ${getPlayerBackgroundColor(index)}`}>
+          {player.playerName}
+        </div>
         <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
         {allPlayersSelected && selectedCards[player.id] ===  "car-card.png" && <CalculateCarMoveSpaces playerCount={players.length} carCardCount={calculateCarCardCount()}/> }
         {allPlayersSelected && selectedCards[player.id] ===  "public-transport-card.png" && <CalculatePublicMoveSpaces/>}
@@ -87,7 +95,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="p-5 flex flex-col md:flex-row items-center">
+      <div className="p-3 flex flex-col md:flex-row items-center">
         <Link href={"/room-config"} className="mx-3 md:mr-20 md:pr-10 text-center text-2xl md:flex md:items-center md:text-3xl md:text-start font-bold text-white">
           <img src="/arrow.png" alt="矢印" className="hideOnMobile mr-3" />Back to Room
         </Link>
@@ -96,7 +104,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex items-start h-screen md:h-72">
+      <div className="flex items-start h-screen md:h-96">
         <div className="w-full station flex flex-col-reverse md:flex-row items-start md:items-center justify-around">
           <span className="text-3xl font-bold">START</span>
           <div className="stationLineMap">
@@ -135,8 +143,8 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="mt-10 flex flex-col justify-center items-center h-72">
-        <div className="w-full md:w-4/5 h-3/4 flex text-center text-sm md:text-3xl font-bold rounded-lg bg-white">
+      <div className="flex flex-col justify-center items-center h-56">
+        <div className="w-full md:w-4/5 md:h-full flex text-center text-sm md:text-3xl font-bold rounded-lg bg-white">
           <div className="md:mx-10 mx-2 my-3">
             STATS
           </div>
