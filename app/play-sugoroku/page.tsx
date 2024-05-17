@@ -74,7 +74,7 @@ const Page = () => {
 
   const getPlayerBackgroundColor = (index: number) => {
     const colors =
-      ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-orange-500','bg-stone-500','bg-violet-500','bg-cyan-500'];
+      ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-orange-500', 'bg-stone-500', 'bg-violet-500', 'bg-cyan-500'];
     return colors[index % colors.length];
   }
 
@@ -85,13 +85,38 @@ const Page = () => {
           {player.playerName}
         </div>
         <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
-        {allPlayersSelected && selectedCards[player.id] ===  "car-card.png" && <CalculateCarMoveSpaces playerCount={players.length} carCardCount={calculateCarCardCount()}/> }
-        {allPlayersSelected && selectedCards[player.id] ===  "public-transport-card.png" && <CalculatePublicMoveSpaces/>}
+        {allPlayersSelected && selectedCards[player.id] === "car-card.png" && <CalculateCarMoveSpaces playerCount={players.length} carCardCount={calculateCarCardCount()} />}
+        {allPlayersSelected && selectedCards[player.id] === "public-transport-card.png" && <CalculatePublicMoveSpaces />}
         {!allPlayersSelected && showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
         {!allPlayersSelected && cardChoosed ? <PlayersSelectedCard card={selectedCards[player.id]} /> : null}
       </div>
     ));
   }
+
+  const renderStations = (players: { id: number, playerName: string, createdAt: Date }[]) => {
+    const stationNames = [
+      "Akihabara",
+      "shin-Okachimati",
+      "Asakusa",
+      "Minami-senjyu",
+      "Kita-senjyu",
+      "Yashio",
+      "Misato-chuo",
+      "Tsukaba"
+    ];
+
+    return stationNames.map((station, index) => (
+      <div key={index} className="stationLineMap">
+        <img src={`/station-number${index + 1}.png`} alt={`駅番号${index + 1}`} />
+        <span className="font-bold text-white">{station}</span>
+        {players[index] && (
+          <div className={`w-full rounded-lg text-white text-center font-bold ${getPlayerBackgroundColor(index)}`}>
+            {players[index].playerName}
+          </div>
+        )}
+      </div>
+    ));
+  };
 
   return (
     <>
@@ -107,38 +132,7 @@ const Page = () => {
       <div className="flex items-start h-screen md:h-96">
         <div className="w-full station flex flex-col-reverse md:flex-row items-start md:items-center justify-around">
           <span className="text-3xl font-bold">START</span>
-          <div className="stationLineMap">
-            <img src="/station-number1.png" alt="駅番号1" />
-            <span className="font-bold text-white">Akihabara</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number2.png" alt="駅番号2" />
-            <span className="font-bold text-sm text-white">shin-<br />Okachimachi</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number3.png" alt="駅番号3" />
-            <span className="font-bold text-white">Asakusa</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number4.png" alt="駅番号4" />
-            <span className="font-bold text-white">Minami-senjyu</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number5.png" alt="駅番号5" />
-            <span className="font-bold text-white">Kita-senjyu</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number6.png" alt="駅番号6" />
-            <span className="font-bold text-white">Yashio</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number7.png" alt="駅番号7" />
-            <span className="font-bold text-white">Misato-chuo</span>
-          </div>
-          <div className="stationLineMap">
-            <img src="/station-number8.png" alt="駅番号8" />
-            <span className="font-bold text-white">Tsukuba</span>
-          </div>
+          {renderStations(players)}
           <span className="text-3xl font-bold">GOAL</span>
         </div>
       </div>
