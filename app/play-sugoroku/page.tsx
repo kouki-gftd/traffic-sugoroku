@@ -3,42 +3,72 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CardSelect from "@/components/CardSelect";
 import PlayersSelectedCard from "@/components/PlayersSelectedCard";
-import CalculationLogic from "@/components/CalculationLogic";
-import AllPlayersSelectedCards from "@/components/AllplayersSelectedCards";
 import CalculateCarMoveSpaces from "@/components/CalculateCarMoveSpaces";
 import CalculatePublicMoveSpaces from "@/components/CalculatePublicMoveSpaces";
+import { calculateMoveSpaces } from "@/components/Gamerules";
 
-const Page = () => {
-  const [showCardSelect, setShowCardSelect] = useState<boolean>(false);
-  const [players, setPlayers] = useState<{ id: number, playerName: string, createdAt: Date }[]>([]);
-  const [cardChoosed, setCardChoosed] = useState<boolean>(false);
+const CAR_CARD = 'car-card.png';
+const PUBLIC_TRANSPORT_CARD = 'public-transport-card.png';
+const QUESTION_CARD = 'question-card.png';
+const CARDS = [CAR_CARD, PUBLIC_TRANSPORT_CARD];
 
-  const randomCards = () => {
-    const cards = ['car-card.png', 'public-transport-card.png'];
-    return cards[Math.floor(Math.random() * cards.length)];
-  };
+const stationNames = [
+  "Akihabara",
+  "shin-Okachimati",
+  "Asakusa",
+  "Minami-senjyu",
+  "Kita-senjyu",
+  "Yashio",
+  "Misato-chuo",
+  "Tsukaba"
+];
 
-  // 各プレイヤーの選択したカードを追跡するための状態変数を作成 key=数値(id) value=string
-  const [selectedCards, setSelectedCards] = useState<{ [id: number]: string }>({});
+const PLAYER_COLORS = [
+  'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500',
+  'bg-orange-500', 'bg-stone-500', 'bg-violet-500', 'bg-cyan-500'
+];
 
-  // 各プレイヤーがランダムではなく自分でカードを選択したかどうかを追跡するための状態変数を作成
-  const [playerSelected, setPlayerSelected] = useState<{ [id: number]: boolean }>({});
+type Player = {
+  id: number;
+  playerName: string;
+  createdAt: Date;
+};
 
-  // 全てのプレイヤーがカードを選択したかどうかを確認
-  const allPlayersSelected = Object.keys(playerSelected).length === players.length &&
-    Object.values(playerSelected).every(val => val === true);
+type State = {
+  showCardSelect: boolean;
+  players: Player[];
+  cardChoosed: boolean;
+  playerPositions: {[id: number]: number };
+  selectedCards:   {[id: number]:   string };
+  playerSelected: {[id:number]: boolean};
+}
+
+const Page: React.FC = () => {
+  const [state, setState] = useState<State>({
+    showCardSelect: false,
+    players: [],
+    cardChoosed: false,
+    playerPositions: {},
+    selectedCards: {},
+    playerSelected: {}
+  });
+
+  const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
+    Object.values(state.playerSelected).every(val => val === true);
+
+  const randomCards = () => CARDS[Math.floor(Math.random() * CARDS.length)];
 
   const selectedCard = (playerId: number, card: string) => {
-    setSelectedCards(prev => ({ ...prev, [playerId]: card }));
-    setPlayerSelected(prev => ({ ...prev, [playerId]: true }));
-    setCardChoosed(true);
-  }
+    setState(prev => ({
+      ...prev,
+      selectedCards: { ...prev.selectedCards, [playerId]: card },
+      playerSelected: { ...prev.playerSelected, [playerId]: true },
+      cardChoosed: true
+    }));
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowCardSelect(true);
-    }, 1000);
-
+    const timer = setTimeout(() => setState(prev => ({ ...prev, showCardSelect: true})),1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -46,74 +76,71 @@ const Page = () => {
     const fetchPlayers = async () => {
       const res = await fetch('/api/players');
       const data = await res.json();
-      setPlayers(data);
+      const initialPositions = data.reduce((acc: { [id: number]: number }, player: Player) => ({ ...acc, [player.id]: -1}),{}); // 初期位置は全てのプレイヤーに対して-1に設定
+      setState(prev => ({ ...prev, players: data, playerPositions: initialPositions }));
     };
     fetchPlayers();
   }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      players.forEach(player => {
-        if (!playerSelected[player.id]) {
+      state.players.forEach(player => {
+        if (!state.playerSelected[player.id]) {
           selectedCard(player.id, randomCards());
         }
       });
     }, 2000);
     return () => clearTimeout(timer);
-  }, [players, playerSelected]);
+  }, [state.players, state.playerSelected]);
+
+  useEffect(() => {
+    if (allPlayersSelected) {
+      const newPositions = { ...state.playerPositions };
+      const carCardCount = calculateCarCardCount();
+
+      state.players.forEach(player => {
+        if (state.selectedCards[player.id] === PUBLIC_TRANSPORT_CARD) {
+          newPositions[player.id] = Math.min(newPositions[player.id] + 2, stationNames.length - 1);
+        } else if (state.selectedCards[player.id] === CAR_CARD) {
+          const moveSpaces = calculateMoveSpaces(state.players.length, carCardCount);
+          newPositions[player.id] = Math.min(newPositions[player.id] + moveSpaces, stationNames.length -1);
+        }
+      });
+      setState(prev => ({ ...prev, playerPositions: newPositions}));
+    }
+  }, [allPlayersSelected]);
 
   const calculateCarCardCount = () => {
-    let count = 0;
-    for (let key in selectedCards) {
-      if (selectedCards[key] === "car-card.png") {
-        count++;
-      }
-    }
-    return count;
-  };
-
-  const getPlayerBackgroundColor = (index: number) => {
-    const colors =
-      ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-orange-500', 'bg-stone-500', 'bg-violet-500', 'bg-cyan-500'];
-    return colors[index % colors.length];
+    return Object.values(state.selectedCards).filter(card => card === CAR_CARD).length;
   }
 
-  const renderPlayerCards = (players: { id: number, playerName: string, createdAt: Date }[]) => {
-    return players.map((player, index) => (
+  const getPlayerBackgroundColor = (index: number) => PLAYER_COLORS[index % PLAYER_COLORS.length]
+
+  const renderPlayerCards = () => {
+    return state.players.map((player, index) => (
       <div key={player.id} className="flex flex-col items-center text-lg">
         <div className={`w-full mb-3 text-white rounded-lg ${getPlayerBackgroundColor(index)}`}>
           {player.playerName}
         </div>
-        <img className="card" src={selectedCards[player.id] || "question-card.png"} alt="カード" />
-        {allPlayersSelected && selectedCards[player.id] === "car-card.png" && <CalculateCarMoveSpaces playerCount={players.length} carCardCount={calculateCarCardCount()} />}
-        {allPlayersSelected && selectedCards[player.id] === "public-transport-card.png" && <CalculatePublicMoveSpaces />}
-        {!allPlayersSelected && showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
-        {!allPlayersSelected && cardChoosed ? <PlayersSelectedCard card={selectedCards[player.id]} /> : null}
+        <img className="card" src={state.selectedCards[player.id] || QUESTION_CARD} alt="カード" />
+        {allPlayersSelected && state.selectedCards[player.id] === "car-card.png" && <CalculateCarMoveSpaces playerCount={state.players.length} carCardCount={calculateCarCardCount()} />}
+        {allPlayersSelected && state.selectedCards[player.id] === "public-transport-card.png" && <CalculatePublicMoveSpaces />}
+        {!allPlayersSelected && state.showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
+        {!allPlayersSelected && state.cardChoosed ? <PlayersSelectedCard card={state.selectedCards[player.id]} /> : null}
       </div>
     ));
-  }
+  };
 
-  const renderStations = (players: { id: number, playerName: string, createdAt: Date }[]) => {
-    const stationNames = [
-      "Akihabara",
-      "shin-Okachimati",
-      "Asakusa",
-      "Minami-senjyu",
-      "Kita-senjyu",
-      "Yashio",
-      "Misato-chuo",
-      "Tsukaba"
-    ];
-
+  const renderStations = () => {
     return stationNames.map((station, index) => (
       <div key={index} className="stationLineMap">
         <img src={`/station-number${index + 1}.png`} alt={`駅番号${index + 1}`} />
         <span className="font-bold text-white">{station}</span>
-        {players[index] && (
-          <div className={`w-full rounded-lg text-white text-center font-bold ${getPlayerBackgroundColor(index)}`}>
-            {players[index].playerName}
+        {state.players.map((player, playerIndex) => state.playerPositions[player.id] === index && (
+          <div key={player.id} className={`w-full rounded-lg text-white text-center font-bold ${getPlayerBackgroundColor(playerIndex)}`}>
+            {player.playerName}
           </div>
-        )}
+        ))}
       </div>
     ));
   };
@@ -132,7 +159,7 @@ const Page = () => {
       <div className="flex items-start h-screen md:h-96">
         <div className="w-full station flex flex-col-reverse md:flex-row items-start md:items-center justify-around">
           <span className="text-3xl font-bold">START</span>
-          {renderStations(players)}
+          {renderStations()}
           <span className="text-3xl font-bold">GOAL</span>
         </div>
       </div>
@@ -144,7 +171,7 @@ const Page = () => {
           </div>
           <div className="w-full md:mx-3 my-3">
             <div className="flex justify-around">
-              {renderPlayerCards(players)}
+              {renderPlayerCards()}
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ const Page = () => {
 
   const router = useRouter();
   const [gameMode, setGameMode] = useState<string>("basic"); // デフォルトのゲームモードを設定
+  const [roomId, setRoomId]     = useState<string>("");      // Room IDを入力するための状態変数
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,6 +17,15 @@ const Page = () => {
       router.push(`/room-config?gameModeId=${gameModeId}`);
     } catch (error) {
       console.error('Failed to add game mode:', error);
+    }
+  };
+
+  const handleRoomIdSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (roomId) {
+      router.push(`/room/${roomId}`);
+    } else {
+      console.error('Room ID is required');
     }
   };
 
@@ -29,6 +39,15 @@ const Page = () => {
         <div className="text-3xl my-10 md:text-5xl font-bold">
           Create New Room
         </div>
+        <form onSubmit={handleRoomIdSubmit} className="flex flex-col text-center">
+          Enter Room ID
+          <input
+           type="text"
+           value={roomId}
+           onChange={(e) => setRoomId(e.target.value)}
+           className="border p-2 mt-2"
+          />
+        </form>
         <p className="mt-5 mb-5 text-2xl font-bold">Choose Game Mode</p>
         <form onSubmit={handleSubmit}>
           <div className="">
