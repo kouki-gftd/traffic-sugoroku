@@ -20,7 +20,7 @@ const stationNames = [
   "Kita-senjyu",
   "Yashio",
   "Misato-chuo",
-  "Tsukaba"
+  "Tsukuba"
 ];
 
 const PLAYER_COLORS = [
@@ -41,7 +41,8 @@ type State = {
   playerPositions: {[id: number]: number };
   selectedCards:   {[id: number]:   string };
   playerSelected: {[id:number]: boolean};
-}
+  playerFinished: Set<number>;
+};
 
 const Page: React.FC = () => {
   const [state, setState] = useState<State>({
@@ -50,7 +51,8 @@ const Page: React.FC = () => {
     cardChoosed: false,
     playerPositions: {},
     selectedCards: {},
-    playerSelected: {}
+    playerSelected: {},
+    playerFinished: new Set<number>()
   });
 
   const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
@@ -105,8 +107,33 @@ const Page: React.FC = () => {
           const moveSpaces = calculateMoveSpaces(state.players.length, carCardCount);
           newPositions[player.id] = Math.min(newPositions[player.id] + moveSpaces, stationNames.length -1);
         }
+
+        // ゴールしたプレイヤーを確認
+        if (newPositions[player.id] === stationNames.length - 1) {
+          setState(prev => ({
+            ...prev,
+            playerFinished: new Set(prev.playerFinished).add(player.id)
+          }));
+        }
       });
       setState(prev => ({ ...prev, playerPositions: newPositions}));
+
+      // すべてのカードが選択された後の3秒後に再度カードを選択
+      const resetTimer = setTimeout(() => {
+        setState(prev => ({
+          ...prev,
+          selectedCards:  {},
+          playerSelected: {},
+          cardChoosed: false,
+          showCardSelect: false
+        }));
+        // カード選択を開始
+        const showCardSelectTimer = setTimeout(() => {
+          setState(prev => ({ ...prev, showCardSelect: true }));
+        }, 1000);
+        return () => clearTimeout(showCardSelectTimer);
+      }, 3000);
+      return () => clearTimeout(resetTimer);
     }
   }, [allPlayersSelected]);
 
@@ -117,7 +144,10 @@ const Page: React.FC = () => {
   const getPlayerBackgroundColor = (index: number) => PLAYER_COLORS[index % PLAYER_COLORS.length]
 
   const renderPlayerCards = () => {
-    return state.players.map((player, index) => (
+    return state.players.map((player, index) => {
+      if (state.playerFinished.has(player.id)) return null; // ゴールに到達したプレイヤーは非表示
+
+      return (
       <div key={player.id} className="flex flex-col items-center text-lg">
         <div className={`w-full mb-3 text-white rounded-lg ${getPlayerBackgroundColor(index)}`}>
           {player.playerName}
@@ -128,7 +158,8 @@ const Page: React.FC = () => {
         {!allPlayersSelected && state.showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
         {!allPlayersSelected && state.cardChoosed ? <PlayersSelectedCard card={state.selectedCards[player.id]} /> : null}
       </div>
-    ));
+    );
+  });
   };
 
   const renderStations = () => {
@@ -136,7 +167,8 @@ const Page: React.FC = () => {
       <div key={index} className="stationLineMap">
         <img src={`/station-number${index + 1}.png`} alt={`駅番号${index + 1}`} />
         <span className="font-bold text-white">{station}</span>
-        {state.players.map((player, playerIndex) => state.playerPositions[player.id] === index && (
+        {state.players.map((player, playerIndex) => state.playerPositions[player.id] === index &&
+        !state.playerFinished.has(player.id) && (
           <div key={player.id} className={`w-full rounded-lg text-white text-center font-bold ${getPlayerBackgroundColor(playerIndex)}`}>
             {player.playerName}
           </div>
