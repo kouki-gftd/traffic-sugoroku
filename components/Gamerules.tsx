@@ -1,16 +1,16 @@
 import React from "react";
 
 export const gameRules = [
-  { players: 4, carCount: 1, moveSpaces: 3 },
+  { players: 4, carCount: 1, moveSpaces: 4 },
   { players: 4, carCount: 2, moveSpaces: 2 },
   { players: 4, carCount: 3, moveSpaces: 1 },
   { players: 4, carCount: 4, moveSpaces: 0 },
-  { players: 5, carCount: 1, moveSpaces: 3 },
+  { players: 5, carCount: 1, moveSpaces: 4 },
   { players: 5, carCount: 2, moveSpaces: 2 },
   { players: 5, carCount: 3, moveSpaces: 1 },
   { players: 5, carCount: 4, moveSpaces: 1 },
   { players: 5, carCount: 5, moveSpaces: 0 },
-  { players: 6, carCount: 1, moveSpaces: 3 },
+  { players: 6, carCount: 1, moveSpaces: 4 },
   { players: 6, carCount: 2, moveSpaces: 3 },
   { players: 6, carCount: 3, moveSpaces: 2 },
   { players: 6, carCount: 4, moveSpaces: 1 },
