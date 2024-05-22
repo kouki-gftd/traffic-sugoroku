@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CardSelect from "@/components/CardSelect";
 import PlayersSelectedCard from "@/components/PlayersSelectedCard";
@@ -35,16 +36,17 @@ type Player = {
 };
 
 type State = {
-  showCardSelect: boolean;
-  players: Player[];
-  cardChoosed: boolean;
+  showCardSelect:  boolean;
+  players:         Player[];
+  cardChoosed:     boolean;
   playerPositions: {[id: number]: number };
-  selectedCards:   {[id: number]:   string };
-  playerSelected: {[id:number]: boolean};
-  playerFinished: Set<number>;
+  selectedCards:   {[id: number]: string };
+  playerSelected:  {[id:number]: boolean };
+  playerFinished:  Set<number>;
 };
 
 const Page: React.FC = () => {
+  const router = useRouter();
   const [state, setState] = useState<State>({
     showCardSelect: false,
     players: [],
@@ -57,6 +59,8 @@ const Page: React.FC = () => {
 
   const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
     Object.values(state.playerSelected).every(val => val === true);
+
+  const allPlayersFinished = state.players.length > 0 && state.players.length === state.playerFinished.size;
 
   const randomCards = () => CARDS[Math.floor(Math.random() * CARDS.length)];
 
@@ -91,7 +95,7 @@ const Page: React.FC = () => {
           selectedCard(player.id, randomCards());
         }
       });
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, [state.players, state.playerSelected]);
 
@@ -110,10 +114,11 @@ const Page: React.FC = () => {
 
         // ゴールしたプレイヤーを確認
         if (newPositions[player.id] === stationNames.length - 1) {
-          setState(prev => ({
-            ...prev,
-            playerFinished: new Set(prev.playerFinished).add(player.id)
-          }));
+          setState(prev => {
+            const playerFinished = new Set(prev.playerFinished);
+            playerFinished.add(player.id);
+            return { ...prev, playerFinished };
+          });
         }
       });
       setState(prev => ({ ...prev, playerPositions: newPositions}));
@@ -137,6 +142,15 @@ const Page: React.FC = () => {
     }
   }, [allPlayersSelected]);
 
+  useEffect(() => {
+    if (allPlayersFinished) {
+      const finishTimer = setTimeout(() => {
+        router.push('/result');
+      }, 3000);
+      return () => clearTimeout(finishTimer);
+    }
+  }, [allPlayersFinished, router]);
+
   const calculateCarCardCount = () => {
     return Object.values(state.selectedCards).filter(card => card === CAR_CARD).length;
   }
@@ -153,8 +167,8 @@ const Page: React.FC = () => {
           {player.playerName}
         </div>
         <img className="card" src={state.selectedCards[player.id] || QUESTION_CARD} alt="カード" />
-        {allPlayersSelected && state.selectedCards[player.id] === "car-card.png" && <CalculateCarMoveSpaces playerCount={state.players.length} carCardCount={calculateCarCardCount()} />}
-        {allPlayersSelected && state.selectedCards[player.id] === "public-transport-card.png" && <CalculatePublicMoveSpaces />}
+        {allPlayersSelected && state.selectedCards[player.id] === CAR_CARD && <CalculateCarMoveSpaces playerCount={state.players.length} carCardCount={calculateCarCardCount()} />}
+        {allPlayersSelected && state.selectedCards[player.id] === PUBLIC_TRANSPORT_CARD && <CalculatePublicMoveSpaces />}
         {!allPlayersSelected && state.showCardSelect ? <CardSelect playerId={player.id} selectCard={selectedCard} /> : null}
         {!allPlayersSelected && state.cardChoosed ? <PlayersSelectedCard card={state.selectedCards[player.id]} /> : null}
       </div>
