@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +14,7 @@ const PUBLIC_TRANSPORT_CARD = 'public-transport-card.png';
 const QUESTION_CARD = 'question-card.png';
 const CARDS = [CAR_CARD, PUBLIC_TRANSPORT_CARD];
 
-const stationNames = [
+export const stationNames = [
   "Akihabara",
   "shin-Okachimati",
   "Asakusa",
@@ -145,7 +146,10 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (allPlayersFinished) {
       const finishTimer = setTimeout(() => {
-        router.push('/result');
+        const playerNames = state.players.map(player => player.playerName);
+        // プレイヤー名をローカルストレージに保存
+        localStorage.setItem('players', JSON.stringify(playerNames));
+        router.replace('/result');
       }, 3000);
       return () => clearTimeout(finishTimer);
     }
