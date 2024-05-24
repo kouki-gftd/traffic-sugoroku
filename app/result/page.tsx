@@ -3,13 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { stationNames } from "../play-sugoroku/page";
 
+type playerData = {
+  name:  string;
+  color: string;
+};
+
 const Page: React.FC = () => {
-  const [playerNames, setPlayerNames] = useState<string[]>([]);
+  const [playerData, setPlayerData] = useState<playerData[]>([]);
 
   useEffect(() => {
-    const storedPlayerNames = localStorage.getItem('players');
-    if (storedPlayerNames) {
-      setPlayerNames(JSON.parse(storedPlayerNames));
+    const storedPlayerData = localStorage.getItem('players');
+    if (storedPlayerData) {
+      setPlayerData(JSON.parse(storedPlayerData));
     }
   }, []);
 
@@ -37,7 +42,7 @@ const Page: React.FC = () => {
           <div className="text-blue-900 font-bold text-sm md:text-xl">
             Mode Basic
           </div>
-          <div className="flex font-bold text-xl md:text-4xl text-white justify-center items-center">
+          <div className="ml-10 flex font-bold text-xl md:text-4xl text-white justify-center items-center">
             {stationNames.map((station, index) => (
               <div key={index} className="m-2 md:m-8">
                 {index + 1}
@@ -52,9 +57,9 @@ const Page: React.FC = () => {
           </div>
           <div>
           <ul>
-            {playerNames.map((player, index) => (
-              <li key={index} className="mb-3 font-bold text-2xl text-white">
-                {player}
+            {playerData.map((player, index) => (
+              <li key={index} className={`max-w-36 mb-3 font-bold text-2xl text-center text-white rounded-lg ${player.color}`}>
+                {player.name}
               </li>
             ))}
           </ul>

@@ -146,9 +146,13 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (allPlayersFinished) {
       const finishTimer = setTimeout(() => {
-        const playerNames = state.players.map(player => player.playerName);
-        // プレイヤー名をローカルストレージに保存
-        localStorage.setItem('players', JSON.stringify(playerNames));
+        // プレイヤー名と背景色をローカルストレージに保存
+        const playerData = state.players.map((player, index) => ({
+          name:  player.playerName,
+          color: PLAYER_COLORS[index % PLAYER_COLORS.length]
+        }));
+        localStorage.setItem('players', JSON.stringify(playerData));
+        // 3秒後にゲーム結果ページに遷移
         router.replace('/result');
       }, 3000);
       return () => clearTimeout(finishTimer);
