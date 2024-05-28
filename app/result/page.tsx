@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import { stationNames } from "../play-sugoroku/page";
 
 type playerData = {
-  name:  string;
-  color: string;
+  name:         string;
+  color:        string;
+  cardHistory:  string[];
+  stepsHistory: number[];
 };
 
 const Page: React.FC = () => {
@@ -43,9 +45,25 @@ const Page: React.FC = () => {
             Mode Basic
           </div>
           <div className="ml-10 flex font-bold text-xl md:text-4xl text-white justify-center items-center">
-            {stationNames.map((station, index) => (
-              <div key={index} className="m-2 md:m-8">
-                {index + 1}
+            {stationNames.map((station, stationIndex) => (
+              <div key={stationIndex} className="m-2 md:m-8">
+                <div className="text-center">{stationIndex + 1}</div>
+                <div className="flex flex-col items-center">
+                  {playerData.map((player, playerIndex) => (
+                    player.cardHistory[stationIndex] && (
+                      <div key={`${playerIndex}-${stationIndex}`} className="mb-5">
+                      <img
+                        src={player.cardHistory[stationIndex]}
+                        alt={`card ${stationIndex + 1}`}
+                        className="mb-1"
+                      />
+                      <div className="text-center text-sm text-white">
+                        +{player.stepsHistory[stationIndex]}
+                      </div>
+                      </div>
+                    )
+                  ))}
+                </div>
               </div>
             ))}
             <div>
@@ -58,7 +76,7 @@ const Page: React.FC = () => {
           <div>
           <ul>
             {playerData.map((player, index) => (
-              <li key={index} className={`max-w-36 mb-3 font-bold text-2xl text-center text-white rounded-lg ${player.color}`}>
+              <li key={index} className={`flex flex-row max-w-36 mb-3 font-bold text-2xl text-center text-white rounded-lg ${player.color}`}>
                 {player.name}
               </li>
             ))}
