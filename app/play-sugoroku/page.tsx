@@ -44,6 +44,8 @@ type State = {
   selectedCards:   {[id: number]: string };
   playerSelected:  {[id:number]: boolean };
   playerFinished:  Set<number>;
+  cardHistory:     { [id: number]: string[] };
+  stepsHistory:    { [id: number]: number[] };
 };
 
 const Page: React.FC = () => {
@@ -55,7 +57,9 @@ const Page: React.FC = () => {
     playerPositions: {},
     selectedCards: {},
     playerSelected: {},
-    playerFinished: new Set<number>()
+    playerFinished: new Set<number>(),
+    cardHistory: {},
+    stepsHistory: {}
   });
 
   const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
@@ -70,7 +74,11 @@ const Page: React.FC = () => {
       ...prev,
       selectedCards: { ...prev.selectedCards, [playerId]: card },
       playerSelected: { ...prev.playerSelected, [playerId]: true },
-      cardChoosed: true
+      cardChoosed: true,
+      cardHistory: {
+        ...prev.cardHistory,
+        [playerId]: [...(prev.cardHistory[playerId] || []), card] // 選択したカードを履歴に追加
+      },
     }));
   };
 
@@ -104,14 +112,21 @@ const Page: React.FC = () => {
     if (allPlayersSelected) {
       const newPositions = { ...state.playerPositions };
       const carCardCount = calculateCarCardCount();
+      const stepsHistory = { ...state.stepsHistory };
 
       state.players.forEach(player => {
+        let moveSpaces = 0;
         if (state.selectedCards[player.id] === PUBLIC_TRANSPORT_CARD) {
+          moveSpaces = 2;
           newPositions[player.id] = Math.min(newPositions[player.id] + 2, stationNames.length - 1);
         } else if (state.selectedCards[player.id] === CAR_CARD) {
-          const moveSpaces = calculateMoveSpaces(state.players.length, carCardCount);
+          moveSpaces = calculateMoveSpaces(state.players.length, carCardCount);
+          console.log(moveSpaces);
           newPositions[player.id] = Math.min(newPositions[player.id] + moveSpaces, stationNames.length -1);
         }
+
+        // プレイヤーのステップ履歴を更新
+        stepsHistory[player.id] = [...(stepsHistory[player.id] || []), moveSpaces];
 
         // ゴールしたプレイヤーを確認
         if (newPositions[player.id] === stationNames.length - 1) {
@@ -122,7 +137,7 @@ const Page: React.FC = () => {
           });
         }
       });
-      setState(prev => ({ ...prev, playerPositions: newPositions}));
+      setState(prev => ({ ...prev, playerPositions: newPositions, stepsHistory}));
 
       // すべてのカードが選択された後の3秒後に再度カードを選択
       const resetTimer = setTimeout(() => {
@@ -131,7 +146,8 @@ const Page: React.FC = () => {
           selectedCards:  {},
           playerSelected: {},
           cardChoosed: false,
-          showCardSelect: false
+          showCardSelect: false,
+          stepsHistory
         }));
         // カード選択を開始
         const showCardSelectTimer = setTimeout(() => {
@@ -146,10 +162,12 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (allPlayersFinished) {
       const finishTimer = setTimeout(() => {
-        // プレイヤー名と背景色をローカルストレージに保存
+        // プレイヤー名と背景色と選択したカード履歴、マス数履歴をローカルストレージに保存
         const playerData = state.players.map((player, index) => ({
           name:  player.playerName,
-          color: PLAYER_COLORS[index % PLAYER_COLORS.length]
+          color: PLAYER_COLORS[index % PLAYER_COLORS.length],
+          cardHistory: state.cardHistory[player.id],
+          stepsHistory: state.stepsHistory[player.id]
         }));
         localStorage.setItem('players', JSON.stringify(playerData));
         // 3秒後にゲーム結果ページに遷移
