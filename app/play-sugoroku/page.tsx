@@ -9,10 +9,10 @@ import CalculateCarMoveSpaces from "@/components/CalculateCarMoveSpaces";
 import CalculatePublicMoveSpaces from "@/components/CalculatePublicMoveSpaces";
 import { calculateMoveSpaces } from "@/components/Gamerules";
 
-const CAR_CARD = 'car-card.png';
+const CAR_CARD              = 'car-card.png';
 const PUBLIC_TRANSPORT_CARD = 'public-transport-card.png';
-const QUESTION_CARD = 'question-card.png';
-const CARDS = [CAR_CARD, PUBLIC_TRANSPORT_CARD];
+const QUESTION_CARD         = 'question-card.png';
+const CARDS                 = [CAR_CARD, PUBLIC_TRANSPORT_CARD];
 
 export const stationNames = [
   "Akihabara",
@@ -37,29 +37,31 @@ type Player = {
 };
 
 type State = {
-  showCardSelect:  boolean;
-  players:         Player[];
-  cardChoosed:     boolean;
-  playerPositions: {[id: number]: number };
-  selectedCards:   {[id: number]: string };
-  playerSelected:  {[id:number]: boolean };
-  playerFinished:  Set<number>;
-  cardHistory:     { [id: number]: string[] };
-  stepsHistory:    { [id: number]: number[] };
+  showCardSelect:     boolean;
+  players:            Player[];
+  cardChoosed:        boolean;
+  playerPositions:    {[id: number]: number };
+  selectedCards:      {[id: number]: string };
+  playerSelected:     {[id:number]: boolean };
+  playerFinished:     Set<number>;
+  cardHistory:        { [id: number]: string[] };
+  stepsHistory:       { [id: number]: number[] };
+  finishedPlayerData: { [id: number]: {cardHistory: string[], stepsHistory: number[]} };
 };
 
 const Page: React.FC = () => {
   const router = useRouter();
   const [state, setState] = useState<State>({
-    showCardSelect: false,
-    players: [],
-    cardChoosed: false,
-    playerPositions: {},
-    selectedCards: {},
-    playerSelected: {},
-    playerFinished: new Set<number>(),
-    cardHistory: {},
-    stepsHistory: {}
+    showCardSelect:     false,
+    players:            [],
+    cardChoosed:        false,
+    playerPositions:    {},
+    selectedCards:      {},
+    playerSelected:     {},
+    playerFinished:     new Set<number>(),
+    cardHistory:        {},
+    stepsHistory:       {},
+    finishedPlayerData: {},
   });
 
   const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
@@ -70,6 +72,7 @@ const Page: React.FC = () => {
   const randomCards = () => CARDS[Math.floor(Math.random() * CARDS.length)];
 
   const selectedCard = (playerId: number, card: string) => {
+
     setState(prev => ({
       ...prev,
       selectedCards: { ...prev.selectedCards, [playerId]: card },
@@ -89,7 +92,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const res = await fetch('/api/players');
+      const res  = await fetch('/api/players');
       const data = await res.json();
       const initialPositions = data.reduce((acc: { [id: number]: number }, player: Player) => ({ ...acc, [player.id]: -1}),{}); // 初期位置は全てのプレイヤーに対して-1に設定
       setState(prev => ({ ...prev, players: data, playerPositions: initialPositions }));
@@ -98,6 +101,7 @@ const Page: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // 3秒以内にカードを選択しない場合、ランダムでカードを選択
     const timer = setTimeout(() => {
       state.players.forEach(player => {
         if (!state.playerSelected[player.id]) {
@@ -115,13 +119,13 @@ const Page: React.FC = () => {
       const stepsHistory = { ...state.stepsHistory };
 
       state.players.forEach(player => {
+
         let moveSpaces = 0;
         if (state.selectedCards[player.id] === PUBLIC_TRANSPORT_CARD) {
           moveSpaces = 2;
           newPositions[player.id] = Math.min(newPositions[player.id] + 2, stationNames.length - 1);
         } else if (state.selectedCards[player.id] === CAR_CARD) {
           moveSpaces = calculateMoveSpaces(state.players.length, carCardCount);
-          console.log(moveSpaces);
           newPositions[player.id] = Math.min(newPositions[player.id] + moveSpaces, stationNames.length -1);
         }
 
@@ -154,7 +158,7 @@ const Page: React.FC = () => {
           setState(prev => ({ ...prev, showCardSelect: true }));
         }, 1000);
         return () => clearTimeout(showCardSelectTimer);
-      }, 3000);
+      }, 1000);
       return () => clearTimeout(resetTimer);
     }
   }, [allPlayersSelected]);
@@ -185,7 +189,8 @@ const Page: React.FC = () => {
 
   const renderPlayerCards = () => {
     return state.players.map((player, index) => {
-      if (state.playerFinished.has(player.id)) return null; // ゴールに到達したプレイヤーは非表示
+      // ゴールに到達したプレイヤーはstatu欄に非表示
+      if (state.playerFinished.has(player.id)) return null;
 
       return (
       <div key={player.id} className="flex flex-col items-center text-lg">

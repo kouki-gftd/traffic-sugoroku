@@ -44,44 +44,42 @@ const Page: React.FC = () => {
           <div className="text-blue-900 font-bold text-sm md:text-xl">
             Mode Basic
           </div>
-          <div className="ml-10 flex font-bold text-xl md:text-4xl text-white justify-center items-center">
+          <div className="ml-10 flex font-bold text-xl md:text-4xl text-white">
+            <div className="flex flex-col">
+              {playerData.map((player, playerIndex) => (
+                <li key={playerIndex} className={`flex flex-col max-w-36 p-1 mb-3 font-bold text-2xl text-center text-white rounded-lg ${player.color}`}>
+                  {player.name}
+                </li>
+              ))}
+            </div>
             {stationNames.map((station, stationIndex) => (
-              <div key={stationIndex} className="m-2 md:m-8">
+              <div key={stationIndex} className="m-2 md:m-5">
                 <div className="text-center">{stationIndex + 1}</div>
                 <div className="flex flex-col items-center">
                   {playerData.map((player, playerIndex) => (
                     player.cardHistory[stationIndex] && (
                       <div key={`${playerIndex}-${stationIndex}`} className="mb-5">
-                      <img
-                        src={player.cardHistory[stationIndex]}
-                        alt={`card ${stationIndex + 1}`}
-                        className="mb-1"
-                      />
-                      <div className="text-center text-sm text-white">
-                        +{player.stepsHistory[stationIndex]}
-                      </div>
+                        <img
+                          src={player.cardHistory[stationIndex]}
+                          alt={`card ${stationIndex + 1}`}
+                          className="mb-1"
+                        />
+                        <div className="text-center text-sm text-white">
+                          +{player.stepsHistory[stationIndex]}
+                        </div>
                       </div>
                     )
                   ))}
                 </div>
               </div>
             ))}
-            <div>
-              Rank
-            </div>
-            <div className="ml-5">
-              CO2
+            <div className="m-5 flex flex-row">
+              <div>Rank</div>
+              <div className="ml-5">CO2</div>
             </div>
           </div>
           <div>
-          <ul>
-            {playerData.map((player, index) => (
-              <li key={index} className={`flex flex-row max-w-36 mb-3 font-bold text-2xl text-center text-white rounded-lg ${player.color}`}>
-                {player.name}
-              </li>
-            ))}
-          </ul>
-        </div>
+          </div>
         </div>
       </div>
 
