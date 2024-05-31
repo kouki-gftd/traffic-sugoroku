@@ -64,14 +64,17 @@ const Page: React.FC = () => {
     finishedPlayerData: {},
   });
 
-  const allPlayersSelected = Object.keys(state.playerSelected).length === state.players.length &&
-    Object.values(state.playerSelected).every(val => val === true);
+  // 参加プレイヤー全員がカードを選択したか判定 (ただしゴールしたプレイヤーは除く)
+  const allPlayersSelected = state.players.length > 0 &&
+  state.players.filter(player => !state.playerFinished.has(player.id)).every(player => state.playerSelected[player.id]);
 
   const allPlayersFinished = state.players.length > 0 && state.players.length === state.playerFinished.size;
 
   const randomCards = () => CARDS[Math.floor(Math.random() * CARDS.length)];
 
   const selectedCard = (playerId: number, card: string) => {
+    if (state.playerFinished.has(playerId)) return;  // ゴールしたプレイヤーのカード選択を無視
+
 
     setState(prev => ({
       ...prev,
