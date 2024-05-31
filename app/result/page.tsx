@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { stationNames } from "../play-sugoroku/page";
+import Link from "next/link";
 
 type playerData = {
   name:         string;
@@ -20,12 +21,23 @@ const Page: React.FC = () => {
     }
   }, []);
 
+  // 使用されたカードの総枚数を計算
+  const totalCards = () => {
+    return playerData.reduce((total, player) => {
+      return total + player.cardHistory.length;
+    }, 0);
+  };
+
   return (
     <>
       <div className="p-5 flex flex-col-reverse md:flex-row md:items-center">
-        <div className="flex flex-row md:text-2xl font-bold text-white items-center">
-          <img src="/arrow.png" alt="矢印" className="mx-3" />
-          Back to Room
+        <div className="md:text-2xl font-bold text-white items-center">
+          <Link href={"/room-config"} className="flex flex-row items-center">
+            <img src="/arrow.png" alt="矢印" className="mx-3" />
+            <div>
+              Back to Room
+            </div>
+          </Link>
         </div>
         <div className="md:mr-20 md:pr-20 flex-1 flex text-3xl md:text-6xl font-bold justify-center">
           Game finished
@@ -35,7 +47,7 @@ const Page: React.FC = () => {
         <div className="w-4/5 md:my-10">
           <div className="md:my-5 flex justify-around text-blue-900 text-sm md:text-2xl font-bold">
             <div>
-              Total Cards
+              Total Cards {totalCards()}
             </div>
             <div>
               Total CO2 Emission XX
@@ -50,8 +62,10 @@ const Page: React.FC = () => {
                 {stationIndex + 1}
               </div>
             ))}
-            <div className="m-5 flex flex-row">
-              <div>Rank</div>
+            <div className="m-5 flex flex-row items-center">
+              <div className="flex flex-col items-center">
+                <div>Rank</div>
+              </div>
               <div className="ml-5">CO2</div>
             </div>
           </div>
