@@ -6,19 +6,23 @@ type playerDataProps = {
   color:        string;
   cardHistory:  string[];
   stepsHistory: number[];
-  onCalculate:  (co2Emission: number) => void;
+  onCalculate:  (playerName: string, co2Emission: number) => void;
+  onCalculationComplete: () => void;
 };
 
-const CalculateOfCo2: React.FC<playerDataProps> = ({cardHistory, onCalculate}) => {
+const CalculateOfCo2: React.FC<playerDataProps> = ({name, cardHistory, onCalculate, onCalculationComplete}) => {
   const carCardCount = cardHistory.filter(card => card === 'car-card.png').length;
   const totalSpaces  = stationNames.length;
 
-  const co2Emission = 57 * carCardCount + 420 * (totalSpaces + carCardCount);
+  const co2Emission = React.useMemo(() => {
+    return 57 * carCardCount + 420 * (totalSpaces + carCardCount);
+  }, [carCardCount, totalSpaces]);
 
   // onCalculate callbackを使って計算結果を親コンポーネントに渡す
   React.useEffect(() => {
-    onCalculate(co2Emission);
-  }, [co2Emission, onCalculate]);
+    onCalculate(name, co2Emission);
+    onCalculationComplete(); // 計算結果の完了を通知
+  }, [onCalculate, onCalculationComplete, name, co2Emission]);
 
   return (
     <div>{co2Emission}</div>
