@@ -138,7 +138,7 @@ const Page: React.FC = () => {
                     ))}
                   </div>
                   <div className="mb-5 mx-3">
-                    {isCo2Calculated && <TopThree players={rankedPlayers} />}
+                    {isCo2Calculated && <TopThree player={player} allPlayers={playerData}/>}
                   </div>
                   <div>
                     <div key={playerIndex} className="flex flex-col mt-5 pb-8">

@@ -9,17 +9,20 @@ type Player = {
 };
 
 type TopThreeProps = {
-  players: Player[];
+  player: Player;
+  allPlayers: Player[];
 };
 
-const TopThree: React.FC<TopThreeProps> = ({ players }) => {
+const TopThree: React.FC<TopThreeProps> = ({ player, allPlayers }) => {
   // cardHistoryの長さが短い順に並べ、同じ長さの場合はtotalCo2の値が低い方を優先
-  const sortedPlayers = [...players].sort((a, b) => {
+  const sortedPlayers = [...allPlayers].sort((a, b) => {
     if (a.cardHistory.length === b.cardHistory.length) {
       return a.totalCo2 - b.totalCo2;
     }
     return a.cardHistory.length - b.cardHistory.length;
   });
+
+  const playerRank = sortedPlayers.findIndex(p => p.name === player.name) + 1;
 
   // 上位3位までのプレイヤーを抽出
   const topThreePlayers = sortedPlayers.slice(0, 3);
@@ -39,13 +42,11 @@ const TopThree: React.FC<TopThreeProps> = ({ players }) => {
     }
   };
 
+  const rankImage = getRankImage(playerRank);
+
   return (
     <div className="flex flex-col items-center">
-      {topThreePlayers.map((player, index) => (
-        <div key={player.name}>
-          <img src={getRankImage(index + 1)} alt={`${index + 1} place`} width={80} height={80} />
-        </div>
-      ))}
+      {rankImage && <img src={rankImage} alt={`${playerRank} place`} width={80} height={80}/>}
     </div>
   )
 }
