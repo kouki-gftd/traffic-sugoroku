@@ -35,7 +35,7 @@ const Page = () => {
         <h1 className="hideOnMobile mt-8 ml-10 text-4xl text-white font-bold">SUGOROKU</h1>
         <h1 className="hideOnMobile mt-8 mr-10 text-4xl text-white font-bold">View Result</h1>
       </div>
-      <div className="w-4/5 md:w-1/2 mx-auto flex flex-col items-center rounded-xl bg-white bg-opacity-60">
+      <div className="w-4/5 md:w-1/2 mx-auto my-10 md:my-5 flex flex-col items-center rounded-xl bg-white bg-opacity-60">
         <div className="text-3xl my-10 md:text-5xl font-bold">
           Create New Room
         </div>
@@ -45,7 +45,7 @@ const Page = () => {
            type="text"
            value={roomId}
            onChange={(e) => setRoomId(e.target.value)}
-           className="border p-2 mt-2"
+           className="border p-2 mt-2 rounded-lg"
           />
         </form>
         <p className="mt-5 mb-5 text-2xl font-bold">Choose Game Mode</p>

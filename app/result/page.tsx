@@ -73,8 +73,8 @@ const Page: React.FC = () => {
     <>
       <div className="p-5 flex flex-col-reverse md:flex-row md:items-center">
         <div className="md:text-2xl font-bold text-white items-center">
-          <Link href={"/room-config"} className="flex flex-row items-center">
-            <img src="/arrow.png" alt="矢印" className="mx-3" />
+          <Link href={"/room-config"} className="flex flex-row items-center my-3">
+            <img src="/arrow.png" alt="矢印" className="md:mx-3 mx-1 w-6 md:w-10" />
             <div>
               Back to Room
             </div>
@@ -116,7 +116,7 @@ const Page: React.FC = () => {
             <div className="mt-5 flex flex-col">
               {playerData.map((player, playerIndex) => (
                 <div key={playerIndex} className="flex flex-row items-center mb-10">
-                  <div className={`w-15 md:w-36 py-3 font-bold text-sm md:text-2xl text-center rounded-lg ${player.color}`}>
+                  <div className={`w-24 md:w-36 mb-5 py-3 font-bold text-sm md:text-2xl text-center rounded-lg ${player.color}`}>
                     {player.name}
                   </div>
                   <div className="flex flex-row ml-5">
@@ -130,7 +130,7 @@ const Page: React.FC = () => {
                             height={70}
                             className="mb-1"
                           />
-                          <div className="text-center text-sm text-white">
+                          <div className="text-center text-sm md:text-lg text-white">
                             +{player.stepsHistory[cardIndex]}
                           </div>
                         </div>

@@ -52,7 +52,7 @@ const Page = () => {
             Player Name
           </p>
           <input type="text" name="name" className="mb-5 py-1 border rounded-lg" />
-          {error && <p className="text-red-500 font-bold">{error}</p>}
+          {error && <p className="text-red-500 text-sm md:text-base font-bold">{error}</p>}
           <button className="submit bg-buttonColor py-2 font-bold rounded-lg text-white">
             Register
           </button>
