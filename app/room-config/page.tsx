@@ -68,7 +68,7 @@ const Page = () => {
         <h1 className="hideOnMobile mt-8 ml-10 text-4xl text-white font-bold">SUGOROKU</h1>
         <h1 className="hideOnMobile mt-8 mr-10 text-4xl text-white font-bold">View Result</h1>
       </div>
-      <div className="w-4/5 md:w-1/2 mx-auto flex flex-col items-center rounded-xl bg-white bg-opacity-60">
+      <div className="w-4/5 md:w-1/2 mx-auto my-5 flex flex-col items-center rounded-xl bg-white bg-opacity-60">
         <div className="m-5 md:my-10 text-5xl font-bold">
           Room
         </div>
