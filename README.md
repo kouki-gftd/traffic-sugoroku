@@ -37,4 +37,5 @@ Create New Room画面でゲームモードを選び、Nextボタンを押しま�
 
 room画面でプレイする都市と公共交通機関に関する設定を選びます。  
 (簡易版のためいずれも未実装)  
+設定完了後にGAME STARTボタンをクリックしてゲーム開始です。
 ![create-new-room画面](https://github.com/kouki-gftd/traffic-sugoroku/raw/develop/public/images/room.png)
