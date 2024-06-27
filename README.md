@@ -26,5 +26,5 @@ npm install
 npm run dev
 
 ブラウザで http://localhost:3000/register にアクセスします。  
-![register画面](/images/register.png)
+![register画面](https://github.com/kouki-gftd/traffic-sugoroku/raw/develop/public/images/register.png)
 register画面でキャラクターの名前を入力します。
