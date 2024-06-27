@@ -14,9 +14,9 @@
 リポジトリをクローンします。
 git@github.com:kouki-gftd/traffic-sugoroku.git
 
-ディレクトリに移動し、依存関係のインストールを行う。
-cd  traffic-sugoroku
-npm install
+ディレクトリに移動し、依存関係のインストールを行う。  
+cd  traffic-sugoroku  
+npm install  
 
 ## 使用方法
 アプリケーションを起動します。
