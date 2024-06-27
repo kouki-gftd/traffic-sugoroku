@@ -25,4 +25,6 @@ npm install
 アプリケーションを起動します。  
 npm run dev
 
-ブラウザで http://localhost:3000/register にアクセスします。
+ブラウザで http://localhost:3000/register にアクセスします。  
+![register画面](/images/register.png)
+register画面でキャラクターの名前を入力します。
