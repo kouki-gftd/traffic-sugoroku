@@ -6,12 +6,15 @@
 
 ## 使用技術
 **プログラミング言語**: TypeScript  
+
 **フレームワーク**: React, Next.js  
+
 **データベース**: SQLite  
+
 **その他**: TailwindCSS
 
 ## インストール方法
-リポジトリをクローンします。
+リポジトリをクローンします。  
 git@github.com:kouki-gftd/traffic-sugoroku.git
 
 ディレクトリに移動し、依存関係のインストールを行う。  
@@ -19,7 +22,7 @@ cd  traffic-sugoroku
 npm install  
 
 ## 使用方法
-アプリケーションを起動します。
+アプリケーションを起動します。  
 npm run dev
 
 ブラウザで http://localhost:3000/register にアクセスします。
