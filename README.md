@@ -26,5 +26,15 @@ npm install
 npm run dev
 
 ブラウザで http://localhost:3000/register にアクセスします。  
+register画面でキャラクターの名前を入力します。  
 ![register画面](https://github.com/kouki-gftd/traffic-sugoroku/raw/develop/public/images/register.png)
-register画面でキャラクターの名前を入力します。
+
+
+Create New Room画面でゲームモードを選び、Nextボタンを押します。
+(簡易版のため現在はBasic Modeのみ)  
+![create-new-room画面](https://github.com/kouki-gftd/traffic-sugoroku/raw/develop/public/images/create-new-room.png)
+
+
+room画面でプレイする都市と公共交通機関に関する設定を選びます。  
+(簡易版のためいずれも未実装)  
+![create-new-room画面](https://github.com/kouki-gftd/traffic-sugoroku/raw/develop/public/images/room.png)
